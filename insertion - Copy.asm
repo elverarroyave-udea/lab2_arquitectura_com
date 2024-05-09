@@ -1,8 +1,10 @@
 .data
 fileName: .asciiz "C:/mips/input_file.txt"
-finished_msj: .asciiz "Fin de la ejecuci?n!"
+finished_msj: .asciiz "Fin de la ejecución!"
 fileWords: .space 1024
 get_separator: .asciiz "Ingrese el separador: "
+show_string: .asciiz "Cadena ingresada: "
+show_order_string: .asciiz "Cadena ordenada: "
 
 .text
 .globl main
@@ -103,6 +105,8 @@ read_file:
 	addi $s0,$zero,268503040
 	addi $s3,$zero,0		# Contador de apilacion
 	
+	addi $t8,$zero,-1
+	
 	loop_array_string:
 		lb $t0,0(,$s2)			# Almacenamos en t0 el valor recuperado del string en en codigo ASCCI
 		#validacion de salida del loop
@@ -112,17 +116,25 @@ read_file:
 			jal build_number		
 			addi $a2,$s4,0
 			addi $a3,$v0,0
+			bne $t7,$t8,no_negative	
+				mul $a3,$a3,$t8		# a3=a3*-1
+				addi $t7,$zero,0
+			no_negative:
 			jal setArrayValue
 			addi $s4,$s4,1		#s4++
 		 	jal end_if_separator
-		else:
+		else:	
+			addi $t1,$zero,45 #validacion si se trata de un numero negativo
+			bne $t0,$t1,no_negative_signo
+				addi $t7,$zero,-1
+				jal end_if_separator
+			no_negative_signo:
 			addi $t0,$t0,-48 	
 			addi $sp,$sp,4
 			sw $t0,($sp)
 			addi $s3,$s3,1
-									
-		end_if_separator:	
-					
+											
+		end_if_separator:		
 		addi $s2,$s2,1 		#Aumentar el contador s2++
 		jal loop_array_string
 	
