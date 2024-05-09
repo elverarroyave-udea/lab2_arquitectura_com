@@ -25,18 +25,20 @@ main:
 	
 	addi $s2,$s7,0		# Almacenamos en s2 la direccion base del string
 	#TODO crear variable para contar cuantos numeros contiene el arreglo
+	addi $s4,$zero,0	# s4 ser? el contador de los numeros que contiene el string
 	
-	add $s0,$s7,$a2		# s0 ser� la base donde se almacenar� el vector de los numeros procesados en memoria,
-	addi $s0,$s0,1		# sumamos 1 para aliniar la memoria
+	#add $s0,$s7,$a2		# s0 ser? la base donde se almacenar? el vector de los numeros procesados en memoria,
+	#addi $s0,$s0,1		# sumamos 1 para aliniar la memoria
+	addi $s0,$s0,268503040
 	
 	addi $t8,$zero,0
-	loop_array:
+	loop_array_string:
 		lb $t0,0($s2)			# Almacenamos en t0 el valor recuperado del string en en codigo ASCCI		
 		addi $t0,$t0,-48 		# ascii_to_decimal
 		
 		#validacion de salida del loop
 		slt $t1,$t0,$zero  		# if(t0<0) ==> t1=1 else t1=0
-		bne $t1,$zero,exit_loop
+		bne $t1,$zero,exit_loop_array_string 
 		
 		begin_if_separator: bne $t0,$s1,else
 		 	jal end_if_separator
@@ -44,14 +46,15 @@ main:
 			addi $a2,$t8,0
 			addi $a3,$t0,0
 			jal setArrayValue
+			addi $s4,$s4,1		#s4++
 			addi $t8,$t8,1		#t8++
 									
 		end_if_separator:	
 					
 		addi $s2,$s2,1 		#Aumentar el contador s2++
-		jal loop_array
+		jal loop_array_string
 	
-exit_loop:				
+exit_loop_array_string :				
 	#Close the file
     	li $v0, 16         		# close_file syscall code
     	move $a0,$s0      		# file descriptor to close
