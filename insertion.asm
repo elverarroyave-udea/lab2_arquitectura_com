@@ -276,8 +276,6 @@ writeFile:
 		j loopWriteReverse
 	endLoopWriteReverse:
 		sb $zero,($t0)     #Agregamos la terminacion el zero (null), del ultimo caracter para formar un asciiz valido
-		lw $t1,268697600
-		sw $t1,268697600
 		#Imprimos el asciiz final
 		addi $v0, $zero, 4    #Modo de impresion de asciiz (strings)
 		add $a0, $s1,0        #Finalmente cargamos la direccion de nuestro numero .word convertido a cadena .asciiz
